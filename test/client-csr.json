@@ -1,0 +1,17 @@
+{
+    "CN": "client",
+    "hosts": [""],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "US",
+            "L": "Dallas",
+            "ST": "Texas",
+            "O": "Dollar After Dollar Company",
+            "OU": "Distributed Services"
+        }
+    ]
+}
