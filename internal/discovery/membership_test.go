@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/serf/serf"
-	. "github.com/nickstrad/dkv_store/internal/discovery"
+	. "github.com/nickstrad/dcl_store/internal/discovery"
 	"github.com/stretchr/testify/require"
 )
 

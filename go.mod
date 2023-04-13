@@ -1,4 +1,4 @@
-module github.com/nickstrad/dkv_store
+module github.com/nickstrad/dcl_store
 
 go 1.19
 

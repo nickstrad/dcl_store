@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/nickstrad/dkv_store/internal/server"
+	"github.com/nickstrad/dcl_store/internal/server"
 )
 
 func main() {

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	api "github.com/nickstrad/dkv_store/api/v1"
+	api "github.com/nickstrad/dcl_store/api/v1"
 )
 
 type Log struct {

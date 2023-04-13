@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	api "github.com/nickstrad/dkv_store/api/v1"
+	api "github.com/nickstrad/dcl_store/api/v1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	api "github.com/nickstrad/dkv_store/api/v1"
+	api "github.com/nickstrad/dcl_store/api/v1"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
