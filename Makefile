@@ -52,5 +52,9 @@ $(CONFIG_PATH)/policy.csv:
 
 .PHONY: test
 test: $(CONFIG_PATH)/policy.csv $(CONFIG_PATH)/model.conf
+	go test --race ./...
+
+.PHONY: test-verbose
+test-verbose: $(CONFIG_PATH)/policy.csv $(CONFIG_PATH)/model.conf
 	go test -v --race ./...
 
