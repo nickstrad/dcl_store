@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/casbin/casbin v1.9.1
 	github.com/gorilla/mux v1.8.0
+	github.com/hashicorp/raft v1.1.1
 	github.com/hashicorp/serf v0.10.1
 	github.com/stretchr/testify v1.8.2
 	go.opencensus.io v0.24.0
@@ -28,7 +29,6 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.0 // indirect
 	github.com/hashicorp/memberlist v0.5.0 // indirect
-	github.com/hashicorp/raft v1.1.1 // indirect
 	github.com/miekg/dns v1.1.41 // indirect
 	github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529 // indirect
 	go.etcd.io/bbolt v1.3.5 // indirect
