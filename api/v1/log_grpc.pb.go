@@ -21,6 +21,7 @@ type LogClient interface {
 	Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
 	AppendStream(ctx context.Context, opts ...grpc.CallOption) (Log_AppendStreamClient, error)
 	ReadStream(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (Log_ReadStreamClient, error)
+	GetServers(ctx context.Context, in *GetServersRequest, opts ...grpc.CallOption) (*GetServersResponse, error)
 }
 
 type logClient struct {
@@ -112,6 +113,15 @@ func (x *logReadStreamClient) Recv() (*ReadResponse, error) {
 	return m, nil
 }
 
+func (c *logClient) GetServers(ctx context.Context, in *GetServersRequest, opts ...grpc.CallOption) (*GetServersResponse, error) {
+	out := new(GetServersResponse)
+	err := c.cc.Invoke(ctx, "/log.v1.Log/GetServers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LogServer is the server API for Log service.
 // All implementations must embed UnimplementedLogServer
 // for forward compatibility
@@ -120,6 +130,7 @@ type LogServer interface {
 	Read(context.Context, *ReadRequest) (*ReadResponse, error)
 	AppendStream(Log_AppendStreamServer) error
 	ReadStream(*ReadRequest, Log_ReadStreamServer) error
+	GetServers(context.Context, *GetServersRequest) (*GetServersResponse, error)
 	mustEmbedUnimplementedLogServer()
 }
 
@@ -138,6 +149,9 @@ func (UnimplementedLogServer) AppendStream(Log_AppendStreamServer) error {
 }
 func (UnimplementedLogServer) ReadStream(*ReadRequest, Log_ReadStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method ReadStream not implemented")
+}
+func (UnimplementedLogServer) GetServers(context.Context, *GetServersRequest) (*GetServersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServers not implemented")
 }
 func (UnimplementedLogServer) mustEmbedUnimplementedLogServer() {}
 
@@ -235,6 +249,24 @@ func (x *logReadStreamServer) Send(m *ReadResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Log_GetServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogServer).GetServers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/log.v1.Log/GetServers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogServer).GetServers(ctx, req.(*GetServersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Log_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "log.v1.Log",
 	HandlerType: (*LogServer)(nil),
@@ -246,6 +278,10 @@ var _Log_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Read",
 			Handler:    _Log_Read_Handler,
+		},
+		{
+			MethodName: "GetServers",
+			Handler:    _Log_GetServers_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

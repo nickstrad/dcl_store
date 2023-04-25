@@ -13,9 +13,11 @@ import (
 	"github.com/nickstrad/dcl_store/internal/agent"
 	"github.com/nickstrad/dcl_store/internal/config"
 	"github.com/nickstrad/dcl_store/internal/discovery"
+	"github.com/nickstrad/dcl_store/internal/loadbalance"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/status"
 )
 
 func TestAgent(t *testing.T) {
@@ -69,6 +71,7 @@ func TestAgent(t *testing.T) {
 			ACLPolicyFile:   config.ACLPolicyFile,
 			ServerTLSConfig: serverTLSConfig,
 			PeerTLSConfig:   peerTLSConfig,
+			Bootstrap:       i == 0,
 		})
 		require.NoError(t, err)
 
@@ -97,6 +100,9 @@ func TestAgent(t *testing.T) {
 	)
 	require.NoError(t, err)
 
+	// delay for replication
+	time.Sleep(3 * time.Second)
+
 	readResponse, err := leaderClient.Read(context.Background(),
 		&api.ReadRequest{
 			Offset: appendResponse.Offset,
@@ -104,9 +110,6 @@ func TestAgent(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.Equal(t, readResponse.Record.Value, []byte("foo"))
-
-	// delay for replication
-	time.Sleep(3 * time.Second)
 
 	// get another agent that should have data replicated to it by now
 	followerClient := client(t, agents[1], peerTLSConfig)
@@ -118,6 +121,18 @@ func TestAgent(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.Equal(t, readResponse.Record.Value, []byte("foo"))
+
+	readResponse, err = leaderClient.Read(
+		context.Background(),
+		&api.ReadRequest{
+			Offset: appendResponse.Offset + 1,
+		},
+	)
+	require.Nil(t, readResponse)
+	require.Error(t, err)
+	got := status.Code(err)
+	want := status.Code(api.ErrOffsetOutOfRange{}.GRPCStatus().Err())
+	require.Equal(t, got, want)
 }
 
 func client(
@@ -131,7 +146,10 @@ func client(
 	}
 	rpcAddr, err := agent.Config.RPCAddr()
 	require.NoError(t, err)
-	conn, err := grpc.Dial(rpcAddr, opts...)
+	conn, err := grpc.Dial(
+		fmt.Sprintf("%s:///%s", loadbalance.Name, rpcAddr),
+		opts...,
+	)
 	require.NoError(t, err)
 	client := api.NewLogClient(conn)
 	return client

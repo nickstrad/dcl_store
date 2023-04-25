@@ -45,6 +45,7 @@ require (
 	github.com/hashicorp/raft-boltdb v0.0.0-20230125174641-2a8082862702
 	github.com/phayes/freeport v0.0.0-20220201140144-74d24b5ae9f5
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/soheilhy/cmux v0.1.5
 	github.com/tysonmote/gommap v0.0.2
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
