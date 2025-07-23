@@ -1,4 +1,4 @@
-## Overiview
+## Overview
 
 This is a distributed systems project I used for applying distributed systems theory.
 
